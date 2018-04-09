@@ -1,4 +1,4 @@
-body {
+/* body {
   background-color: white;
   color: hsla(0, 0%, 60%, 1);
   font-family: Verdana, sans-serif;
@@ -9,4 +9,12 @@ body {
 
 circle {
   opacity: 0.3;
+} */
+
+.board {
+  background-color: pink;
+}
+
+.cell {
+  border: 1px solid black;
 }

@@ -4,8 +4,8 @@ import Board from './Board'
 const App = props => {
   return (
     <div className="section">
-      <h1 className="has-text-centered title is-1">Memory Game</h1>
-      <Board width={props.width / 2} />
+      <h1 className="has-text-centered title is-1">Pet Memory Game</h1>
+      <Board width={props.width / 2} /> 
     </div>
   )
 }

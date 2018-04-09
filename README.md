@@ -1,6 +1,11 @@
-# Enspiraled
+# Pet Memories
 
-For this challenge, you'll be making a basic fractal generator that starts with a single large circle. As your mouse moves over the circle, four more circles appear. And each circle behaves this way.
+For this challenge, you'll be making a basic Memory Game!
+
+There is a grid of randomly arranged pairs. The end goal is to have each "Cell" start hidden, and reveal temporarily when you select it.
+When you have revealed a "Pair" of cells with the same value, you have found a match, and that pair should stay revealed for the rest of the game.
+If you reveal 2 Cells that are NOT a match, they should flip back to being hidden.
+The Game is won when ALL pairs have been matched.
 
 ## Setup
 
@@ -15,12 +20,7 @@ and then go to [`http://localhost:3000`](http://localhost:3000).
 
 This is what your starting place looks like:
 
-![Base case](./public/images/base-circle.png)
-
-And after you've completed this project, this is what it can look like after a few mouse overs:
-
-![Enspiraled](./public/images/enspiral.png)
-
+![Base case](./public/images/memory-game.png)
 
 ## Your starting place
 
@@ -28,47 +28,143 @@ Our journey begins in `client/components/App.jsx`. Here are its contents:
 
 ```jsx
 import React from 'react'
+import Board from './Board'
 
 const App = props => {
-  const circle = {
-    cx: props.width / 2,
-    cy: props.height / 2,
-    level: 0,
-    r: 256
-  }
-
   return (
-    <svg width={props.width} height={props.height}>
-      <circle cx={circle.cx} cy={circle.cy} r={circle.r} />
-    </svg>
+    <div className="section">
+      <h1 className="has-text-centered title is-1">Pet Memory Game</h1>
+      <Board width={props.width / 2} />
+    </div>
   )
 }
 
 export default App
 ```
 
-The `App` component is implemented as a stateless functional component. The `props` are defined in `client/index.js` if you're curious. We use the width and height of the window to center the circle in the browser. This component renders [Scalable Vector Graphics](https://developer.mozilla.org/en-US/docs/Web/SVG): an `<svg>` element with an SVG `<circle>` element in it. It has a radius of 256px (`r`) and is filled with a transparent red established in `public/css/app.css`. It's important to note that this JSX will render The SVG elements, _not React controls_. We know this because `<svg>` and `<circle>` are lower case.
+The `App` component is implemented as a stateless functional component. The `props` are defined in `client/index.js` if you're curious. We use the width of the window to center the Board in the browser. This component renders the Board component, which is slightly more complex.
+
+
+The Javascript code below can be found in client/createBoard.js, you shouldn't have to interact with this code, it is simply used to randomise a 2d Array to use as your Game Board.
+
+```js
+function shuffle(array) {
+    let counter = array.length;
+
+    while (counter > 0) {
+        let index = Math.floor(Math.random() * counter);
+        counter--;
+
+        let temp = array[counter];
+        array[counter] = array[index];
+        array[index] = temp;
+    }
+    return array;
+}
+
+const createCell = (value) => ({
+  value
+})
+
+const createBoard = (size) => {
+  var values = [
+    'Mouse', 'Mouse',
+    'Rabbit', 'Rabbit',
+    'Guinea Pig', 'Guinea Pig',
+    'Dog', 'Dog',
+    'Cat', 'Cat',
+    'Rat', 'Rat',
+    'Parrot', 'Parrot',
+    'Duck', 'Duck'
+  ]
+  values = shuffle(values)
+
+  return Array(size).fill(0).map(
+    () => Array(size).fill(0).map(
+      () => createCell(values.pop())
+    )
+  )
+}
+
+```
+
+The code for Board.jsx will look like
+
+```jsx
+
+import React from 'react'
+import Cell from './Cell'
+
+import createBoard from '../createBoard'
+
+class Board extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      board: createBoard(4),
+      width: props.width
+    }
+  }
+  render() {
+    const board = this.state.board
+    const rowHeight = this.state.width / board.length
+
+    return <div
+      style={{width: this.state.width, height: this.state.width}}
+      className="column board has-text-centered"
+    >
+      {board.map(function(row) {
+        //render a ROW (of cells) on the Board
+        return <div className="row columns" style={{height: rowHeight}} >
+          {row.map(function(cell) {
+            //render each Cell within a ROW, using the Cell.jsx component
+            return <Cell cell={cell} />
+          })}
+        </div>
+      })}
+    </div>
+  }
+}
+
+export default Board
+
+```
+
+This is a **Stateful** Component. The board Array is stored within the Board Component's **State**. There are many solutions to this challenge, and you can solve the game with Board.jsx being the only **Stateful Component**.
+
+Finally, the Cell.jsx Component is a **Functional Component**, simply rendering the Value of a given **Cell Object** (from within the board 2d array) on to the screen within a square. The starting code looks like
+
+``` jsx
+import React from 'react'
+
+const Cell = (props) => {
+
+  return <div className="cell column">
+    {props.cell.value}
+  </div>
+}
+
+export default Cell
+
+```
 
 
 ## The requirements
 
-* As your mouse moves over the circle, four more circles should appear at the cardinal compass points: north, south, east and west.
+* All cells should **start** hidden, and be **revealed** upon a click event
 
-* The radius of the 4 new circles should be half of the _parent_ circle.
+* When a user has selected 2 Cells to reveal, your App must find whether the pair are a **match** or not. A Match will stay revealed, a non-match will be hidden again.
 
-* A circle should only create 4 new _children_ **once**. Subsequent mouseovers should create no visible change.
+* When all pairs are revealed, the user is informed that they have won, and may restart the Game.
 
 
 ## Some things to consider
 
-Because every circle behaves the same way, you could create a new `Circle` component in `client/components/Circle.jsx` that wraps the SVG `<circle>` element and adds some new features (like state).
+When the 2nd Cell is revealed and found to not be a match, you will want to inform the user that they didn't find a match. It would also be sensible to try and give the user several seconds to see their mismatched picks (on a timeOut), or allow the user to confirm (with a button) when they are ready to try again.
 
-When a `<Circle>` is showing itself, it should use the SVG `<circle>` element, but when it's showing it's children, it should use new `<Circle>` components.
+How do you know which Cells are being **temporarily** revealed? How do you know which cells are **permanently** revealed?
 
-The `<Circle>` component should keep its child circles as an array in state. It will only have children if it has been moused over.
-
-You can apply a mouseover event to the SVG `circle` element like so: `<circle cx={cx} cy={cy} r={r} mouseover={handleMouseOver} />`. The `handleMouseOver` function can be defined in the same `Circle.jsx` file.
-
+Do you store or information in the **cell** objects, or seperately within the Board.jsx Components **state**?
 
 ## Resources
 
@@ -76,14 +172,10 @@ If you don't already have it installed, you should install the React DevTools br
 
 And some more:
 
-* [SVG](https://developer.mozilla.org/en/docs/Web/SVG)
-* [SVG `circle`](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/circle)
 * [React Component](https://facebook.github.io/react/docs/reusable-components.html#es6-classes)
 * [React Component API](https://facebook.github.io/react/docs/component-api.html)
 * [How State Works](https://facebook.github.io/react/docs/interactivity-and-dynamic-uis.html#how-state-works)
 * [React's `setState`](https://facebook.github.io/react/docs/component-api.html#setstate)
 * [React Event Handling](https://facebook.github.io/react/docs/interactivity-and-dynamic-uis.html#a-simple-example)
 * [`ReactDOM.render`](https://facebook.github.io/react/docs/top-level-api.html#reactdom.render)
-* [Color](https://developer.mozilla.org/en/docs/Web/CSS/color_value)
 * [React TestUtils](https://facebook.github.io/react/docs/test-utils.html)
-

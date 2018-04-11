@@ -1,7 +1,7 @@
 {
   "name": "enspiraled",
   "version": "1.1.0",
-  "description": "Circles on circles on circles, the React way.",
+  "description": "A React state exercise in rememberance of pets",
   "main": "server",
   "scripts": {
     "start": "node server & webpack --watch",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dev-academy-challenges/enspiraled.git"
+    "url": "https://github.com/dev-academy-challenges/pet-memories.git"
   },
   "author": "EDA",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dev-academy-challenges/enspiraled/issues"
+    "url": "https://github.com/dev-academy-challenges/pet-memories/issues"
   },
-  "homepage": "https://github.com/dev-academy-challenges/enspiraled",
+  "homepage": "https://github.com/dev-academy-challenges/pet-memories",
   "babel": {
     "presets": [
       "env",

@@ -49,17 +49,17 @@ The Javascript code below can be found in client/createBoard.js, you shouldn't h
 
 ```js
 function shuffle(array) {
-    let counter = array.length;
+  let counter = array.length
 
-    while (counter > 0) {
-        let index = Math.floor(Math.random() * counter);
-        counter--;
+  while (counter > 0) {
+    const index = Math.floor(Math.random() * counter)
+    counter--
 
-        let temp = array[counter];
-        array[counter] = array[index];
-        array[index] = temp;
-    }
-    return array;
+    const temp = array[counter]
+    array[counter] = array[index]
+    array[index] = temp
+  }
+  return array
 }
 
 const createCell = (value) => ({

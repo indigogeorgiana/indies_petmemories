@@ -1,9 +1,9 @@
 import React from 'react'
 
 const Cell = (props) => {
-
   return <div className="cell column">
-    {props.cell.value}
+    {props.isHidden && props.cell.value}
+
   </div>
 }
 

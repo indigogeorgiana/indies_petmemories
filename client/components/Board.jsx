@@ -8,28 +8,28 @@ class Board extends React.Component {
     super(props)
     this.state = {
       board: createBoard(4),
-      width: props.width
+      width: props.width,
+      height: props.height,
+      isHidden: props.isHidden
+        
     }
   }
-  render() {
-    const board = this.state.board
-    const rowHeight = this.state.width / board.length
 
-    return <div
-      style={{width: this.state.width, height: this.state.width}}
+  render() {
+  ReactDOM.render(Parent, app)
+
+    return 
+      <div style={{width: this.state.width, height: this.state.height, isHidden: this.state.isHidden}}
       className="column board has-text-centered"
     >
-      {board.map(function(row) {
-        //render a ROW (of cells) on the Board
-        return <div className="row columns" style={{height: rowHeight}} >
-          {row.map(function(cell) {
-            //render each Cell within a ROW, using the Cell.jsx component
-            return <Cell cell={cell} />
-          })}
-        </div>
-      })}
-    </div>
-  }
-}
-
-export default Board
+  {board.map(function (row, id) {
+  // render a ROW (of cells) on the Board
+  return 
+  <div key={id},  className={row columns}  style={{height: rowHeight, 
+  isHidden: {isHidden}, cellsShow: {!isHidden}}} >
+    {row.map(function (cell) {    
+  //render each cell wint a row, using the cell.jsx component
+      return <Cell key={cell.value} cell={cell} onClick={this.state.cellsShow} />
+   
+      }
+      }
